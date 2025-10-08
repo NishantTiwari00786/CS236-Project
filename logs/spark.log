@@ -1,0 +1,36 @@
+25/10/08 14:35:08 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+25/10/08 14:35:08 INFO log: Logging initialized @1396ms to org.sparkproject.jetty.util.log.Slf4jLog
+25/10/08 14:35:09 INFO Server: jetty-9.4.52.v20230823; built: 2023-08-23T19:29:37.669Z; git: abdcda73818a1a2c705da276edb0bf6581e7997e; jvm 17.0.6+10
+25/10/08 14:35:09 INFO Server: Started @1466ms
+25/10/08 14:35:09 INFO AbstractConnector: Started ServerConnector@2d5a745a{HTTP/1.1, (http/1.1)}{0.0.0.0:4040}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@34bca106{/,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Stopped o.s.j.s.ServletContextHandler@34bca106{/,null,STOPPED,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@31245d99{/jobs,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@73a5d12d{/jobs/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@351cefe7{/jobs/job,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@7c1414fe{/jobs/job/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@2d70f14d{/stages,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@700f0901{/stages/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@2000e028{/stages/stage,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@520cfd02{/stages/stage/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@237d310d{/stages/pool,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@28389130{/stages/pool/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@3a041d0a{/storage,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@73a0eee{/storage/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@30a08cba{/storage/rdd,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@3116f4e7{/storage/rdd/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@1e6ffdd7{/environment,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@1809aabb{/environment/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@20a59193{/executors,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@1dd8d2ff{/executors/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@7a3a46a1{/executors/threadDump,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@669156aa{/executors/threadDump/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@43e3f62f{/executors/heapHistogram,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@3b9c3916{/executors/heapHistogram/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@294d07ae{/static,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@1ab46ec6{/,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@77f5aacd{/api,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@7733752a{/jobs/job/kill,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@337aaff9{/stages/stage/kill,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO ContextHandler: Started o.s.j.s.ServletContextHandler@b1d750f{/metrics/json,null,AVAILABLE,@Spark}
+25/10/08 14:35:09 INFO AbstractConnector: Stopped Spark@2d5a745a{HTTP/1.1, (http/1.1)}{0.0.0.0:4040}
