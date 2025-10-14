@@ -168,3 +168,16 @@ df_hotel.groupBy(df_hotel.columns).agg(count("*").alias("count")).filter(col("co
 #df_customer.groupBy(df_customer.columns).agg(count("*").alias("count")).filter(col("count") > 1).show()
 # 
 
+
+# Distinction between market_segment_type in customer_reservation and hotel booking dataset: 
+
+df_customer.groupBy("market_segment_type").count().show()
+
+df_hotel.groupBy("market_segment_type").count().show()
+
+
+
+
+# Numerical number of booking that we cancelled/ not cancelled: 
+
+df_customer.groupBy("Booking_Status").count().show()
