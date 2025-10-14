@@ -6,9 +6,9 @@ spark = SparkSession.builder.appName("LoadingDataSet").getOrCreate() # generatin
 
 # Loading both the datasets
 
-df_customer = spark.read.csv("../data/raw/CS236_Project_Fall2025_Datasets/customer-reservations.csv", header = True, inferSchema = True)
+df_customer = spark.read.csv("data/raw/CS236_Project_Fall2025_Datasets/customer-reservations.csv", header = True, inferSchema = True)
 
-df_hotel = spark.read.csv("../data/raw/CS236_Project_Fall2025_Datasets/hotel-booking.csv", header = True, inferSchema = True)
+df_hotel = spark.read.csv("data/raw/CS236_Project_Fall2025_Datasets/hotel-booking.csv", header = True, inferSchema = True)
 
 
 
@@ -97,7 +97,7 @@ for bar, rate in zip(bars, cancel_rates):
         bar.set_color('green')
 
 plt.tight_layout()
-plt.savefig('../reports/figures/univariate/cancellation_by_segment.png', dpi=300, bbox_inches='tight')
+plt.savefig('reports/phase1/univariate/figures/cancellation_by_segment.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # ==============================Portugal vs International Analysis=============================
@@ -172,7 +172,7 @@ for bars in [bars1, bars2]:
                 f'{height:.1f}', ha='center', va='bottom', fontsize=10)
 
 plt.tight_layout()
-plt.savefig('../reports/figures/univariate/portugal_vs_others.png', dpi=300, bbox_inches='tight')
+plt.savefig('reports/phase1/univariate/figures/portugal_vs_others.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # ============================== City Hotel vs Resort Hotel Analysis=============================
@@ -260,7 +260,7 @@ for bar, rate in zip(bars, cancel_rates_lead):
              f'{rate}%', ha='center', va='bottom', fontweight='bold')
 
 plt.tight_layout()
-plt.savefig('../reports/figures/univariate/cancellation_by_lead_time.png', dpi=300, bbox_inches='tight')
+plt.savefig('reports/phase1/univariate/figures/cancellation_by_lead_time.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 # ============================== Monthly Patterns =============================
@@ -299,5 +299,5 @@ for i in range(12):
              fontweight='bold', color='white' if cancel_rates_monthly[i] > 35 else 'black')
 
 plt.tight_layout()
-plt.savefig('../reports/figures/univariate/monthly_cancellation_heatmap.png', dpi=300, bbox_inches='tight')
+plt.savefig('reports/phase1/univariate/figures/monthly_cancellation_heatmap.png', dpi=300, bbox_inches='tight')
 plt.show()

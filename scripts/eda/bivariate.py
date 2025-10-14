@@ -6,9 +6,9 @@ spark = SparkSession.builder.appName("LoadingDataSet").getOrCreate() # generatin
 
 # Loading both the datasets
 
-df_customer = spark.read.csv("../data/raw/CS236_Project_Fall2025_Datasets/customer-reservations.csv", header = True, inferSchema = True)
+df_customer = spark.read.csv("data/raw/CS236_Project_Fall2025_Datasets/customer-reservations.csv", header = True, inferSchema = True)
 
-df_hotel = spark.read.csv("../data/raw/CS236_Project_Fall2025_Datasets/hotel-booking.csv", header = True, inferSchema = True)
+df_hotel = spark.read.csv("data/raw/CS236_Project_Fall2025_Datasets/hotel-booking.csv", header = True, inferSchema = True)
 
 
 # ============================== Creating Derived columns for analysis =============================
@@ -107,7 +107,7 @@ for bar, price in zip(bars2, avg_prices):
              f'${price:.0f}', ha='center', va='bottom', fontweight='bold')
 
 plt.tight_layout()
-plt.savefig('../reports/figures/bivariate/price_vs_cancellation.png', dpi=300, bbox_inches='tight')
+plt.savefig('reports/phase1/bivariate/figures/price_vs_cancellation.png', dpi=300, bbox_inches='tight')
 print("✓ Saved: bivariate/price_vs_cancellation.png")
 plt.show()
 
@@ -163,7 +163,7 @@ ax2.set_title('Lead Time vs Average Price', fontsize=14, fontweight='bold')
 ax2.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig('../reports/figures/bivariate/lead_time_impact.png', dpi=300, bbox_inches='tight')
+plt.savefig('reports/phase1/bivariate/figures/lead_time_impact.png', dpi=300, bbox_inches='tight')
 print("✓ Saved: bivariate/lead_time_impact.png")
 plt.show()
 
@@ -235,7 +235,7 @@ for i in range(3):
                 color='white' if heatmap_data[i, j] > np.mean(heatmap_data[i]) else 'black')
 
 plt.tight_layout()
-plt.savefig('../reports/figures/bivariate/country_preferences_heatmap.png', dpi=300, bbox_inches='tight')
+plt.savefig('reports/phase1/bivariate/figures/country_preferences_heatmap.png', dpi=300, bbox_inches='tight')
 print("✓ Saved: bivariate/country_preferences_heatmap.png")
 plt.show()
 
@@ -309,6 +309,6 @@ for i, (bar, rate) in enumerate(zip(bars2, cancel_rates_clusters)):
              f'{rate}%', ha='left', va='center', fontweight='bold')
 
 plt.tight_layout()
-plt.savefig('../reports/figures/bivariate/customer_behavior_clusters.png', dpi=300, bbox_inches='tight')
+plt.savefig('reports/phase1/bivariate/figures/customer_behavior_clusters.png', dpi=300, bbox_inches='tight')
 print("✓ Saved: bivariate/customer_behavior_clusters.png")
 plt.show()
