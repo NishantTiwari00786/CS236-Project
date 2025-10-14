@@ -13,40 +13,6 @@ import pyspark as spark
 df_customer = pd.read_csv('/Users/simar/Documents/Fall25/CS236/CS236-Project/data/raw/CS236_Project_Fall2025_Datasets/customer-reservations.csv')
 df_hotel = pd.read_csv('/Users/simar/Documents/Fall25/CS236/CS236-Project/data/raw/CS236_Project_Fall2025_Datasets/hotel-booking.csv')
 
-# # checking data quality 
-# print(f"Customer data head: {df_customer.head()}")
-# print(f"Hotel data head: {df_hotel.head()}")
-
-# print(f"Customer data shape: {df_customer.shape}")
-# print(f"Hotel data shape: {df_hotel.shape}")
-
-# # checking data types
-# print(f"Customer data types: {df_customer.dtypes}")
-# print(f"Hotel data types: {df_hotel.dtypes}")
-
-# # checking for missing values
-# print(f"Customer missing values: {df_customer.isnull().sum()}")
-# print(f"Hotel missing values: {df_hotel.isnull().sum()}")
-
-# # checking for duplicate values
-# print(f"Customer duplicate values: {df_customer.duplicated().sum()}")
-# print(f"Hotel duplicate values: {df_hotel.duplicated().sum()}")
-
-# # checking for unique values
-# print(f"Customer unique values: {df_customer.nunique()}")
-# print(f"Hotel unique values: {df_hotel.nunique()}")
-
-# # checking the duplicate
-# print(df_hotel[df_hotel.duplicated(keep=False)])
-
-# # checking zero prices
-# print(f"Customer zero prices: {(df_customer['avg_price_per_room'] == 0).sum()}")
-# print(f"Hotel zero prices: {(df_hotel['avg_price_per_room'] == 0).sum()}")
-
-# # Market segments
-# print(f"Customer market segments: \n {df_customer['market_segment_type'].value_counts()}")
-# print(f"Hotel market segments: \n {df_hotel['market_segment_type'].value_counts()}")
-
 print(f"Customer:\n {df_customer[df_customer['avg_price_per_room'] ==0]['market_segment_type'].value_counts()}")
 print(f"Hotel:\n {df_hotel[df_hotel['avg_price_per_room'] ==0]['market_segment_type'].value_counts()}")
 
