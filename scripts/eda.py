@@ -186,7 +186,9 @@ df_hotel = spark.read.csv("../data/raw/CS236_Project_Fall2025_Datasets/hotel-boo
 
 # ============================== Creating Derived columns for analysis =============================
 from pyspark.sql.functions import col, count, sum, avg, when, round
-import matplotlib
+import matplotlib 
+import matplotlib.pyplot as plt
+import numpy as np
 matplotlib.use('Agg')
 
 # Create derived columns in Spark
@@ -221,254 +223,492 @@ df_hotel = df_hotel.withColumn("is_zero_price",
 
 print("✓ Derived columns created successfully!")
 
-# ==============================Custimer dataset cancellation by segment=============================
-customer_cancel_by_segment = df_customer.groupBy("market_segment_type").agg(
-    count("*").alias("total_bookings"), 
-    sum('is_canceled').alias("canceled_bookings"),
-    avg('is_canceled').alias('cancellation_rate')
-).withColumn('cancellation_rate', round(col('cancellation_rate') * 100, 1))
+# ===========================================================
+# ==================== Univariate Analysis ====================
+# ===========================================================
 
-print("Custumer dataset cancellation by segment:")
-customer_cancel_by_segment.show()
+# # ==============================Custimer dataset cancellation by segment=============================
+# customer_cancel_by_segment = df_customer.groupBy("market_segment_type").agg(
+#     count("*").alias("total_bookings"), 
+#     sum('is_canceled').alias("canceled_bookings"),
+#     avg('is_canceled').alias('cancellation_rate')
+# ).withColumn('cancellation_rate', round(col('cancellation_rate') * 100, 1))
 
-# hotel dataset cancellation by segment:
-hotel_cancel_by_segment = df_hotel.groupBy("market_segment_type").agg(
-    count("*").alias("total_bookings"), 
-    sum('is_canceled').alias("canceled_bookings"),
-    avg('is_canceled').alias('cancellation_rate')
-).withColumn('cancellation_rate', round(col('cancellation_rate') * 100, 1))
+# print("Custumer dataset cancellation by segment:")
+# customer_cancel_by_segment.show()
 
-print("Hotel dataset cancellation by segment:")
-hotel_cancel_by_segment.show()
+# # hotel dataset cancellation by segment:
+# hotel_cancel_by_segment = df_hotel.groupBy("market_segment_type").agg(
+#     count("*").alias("total_bookings"), 
+#     sum('is_canceled').alias("canceled_bookings"),
+#     avg('is_canceled').alias('cancellation_rate')
+# ).withColumn('cancellation_rate', round(col('cancellation_rate') * 100, 1))
 
-# Create a simple bar chart for cancellation rates
-import matplotlib.pyplot as plt
-import numpy as np
+# print("Hotel dataset cancellation by segment:")
+# hotel_cancel_by_segment.show()
 
-# Data from your analysis
-segments = ['Groups', 'Online TA', 'Offline TA/TO', 'Corporate', 'Aviation', 'Direct', 'Complementary']
-cancel_rates = [62.3, 33.9, 34.5, 15.9, 22.8, 15.3, 11.7]
+# # Create a simple bar chart for cancellation rates
+# import matplotlib.pyplot as plt
+# import numpy as np
 
-plt.figure(figsize=(12, 6))
-bars = plt.bar(segments, cancel_rates, color=['red', 'orange', 'orange', 'green', 'yellow', 'green', 'green'])
-plt.title('Cancellation Rate by Market Segment', fontsize=16, fontweight='bold')
-plt.ylabel('Cancellation Rate (%)', fontsize=12)
-plt.xticks(rotation=45, ha='right')
-plt.ylim(0, 70)
+# # Data from your analysis
+# segments = ['Groups', 'Online TA', 'Offline TA/TO', 'Corporate', 'Aviation', 'Direct', 'Complementary']
+# cancel_rates = [62.3, 33.9, 34.5, 15.9, 22.8, 15.3, 11.7]
 
-# Color code: Red (>50%), Orange (30-50%), Green (<30%)
-for bar, rate in zip(bars, cancel_rates):
-    if rate > 50:
-        bar.set_color('red')
-    elif rate > 30:
-        bar.set_color('orange')
-    else:
-        bar.set_color('green')
+# plt.figure(figsize=(12, 6))
+# bars = plt.bar(segments, cancel_rates, color=['red', 'orange', 'orange', 'green', 'yellow', 'green', 'green'])
+# plt.title('Cancellation Rate by Market Segment', fontsize=16, fontweight='bold')
+# plt.ylabel('Cancellation Rate (%)', fontsize=12)
+# plt.xticks(rotation=45, ha='right')
+# plt.ylim(0, 70)
 
-plt.tight_layout()
-plt.savefig('../reports/figures/cancellation_by_segment.png', dpi=300, bbox_inches='tight')
-plt.show()
+# # Color code: Red (>50%), Orange (30-50%), Green (<30%)
+# for bar, rate in zip(bars, cancel_rates):
+#     if rate > 50:
+#         bar.set_color('red')
+#     elif rate > 30:
+#         bar.set_color('orange')
+#     else:
+#         bar.set_color('green')
 
-# ==============================Portugal vs International Analysis=============================
+# plt.tight_layout()
+# plt.savefig('../reports/figures/cancellation_by_segment.png', dpi=300, bbox_inches='tight')
+# plt.show()
+
+# # ==============================Portugal vs International Analysis=============================
+# print('\n' + '='*80)
+# print("PORTUGAL VS INTERNATIONAL ANALYSIS")
+# print('='*80)
+
+# # Portugal analysis
+# portugal_stats = df_hotel.filter(col('country') == 'PRT').agg(
+#     count("*").alias("total_bookings"), 
+#     sum('is_canceled').alias("canceled_bookings"),
+#     avg(when(col('is_zero_price') == False, col('avg_price_per_room'))).alias('avg_price'),
+#     avg('lead_time').alias('avg_lead_time'), 
+#     avg('total_nights').alias('avg_stay'),
+#     avg('total_booking_value').alias('avg_booking_value')
+# )
+
+# print("Portugal analysis:")
+# portugal_stats.select(
+#     col('total_bookings'),
+#     round(col('canceled_bookings') * 100, 1).alias('canceled_bookings_%'),
+#     round(col('avg_price'), 2).alias('avg_price'),
+#     round(col('avg_lead_time'), 1).alias('avg_lead_time'),
+#     round(col('avg_stay'), 1).alias('avg_stay'),
+#     round(col('avg_booking_value'), 2).alias('avg_booking_value')
+# ).show()
+
+# # International analysis
+# international_stats = df_hotel.filter(col('country') != 'PRT').agg(
+#     count("*").alias("total_bookings"), 
+#     sum('is_canceled').alias("canceled_bookings"),
+#     avg(when(col('is_zero_price') == False, col('avg_price_per_room'))).alias('avg_price'),
+#     avg('lead_time').alias('avg_lead_time'), 
+#     avg('total_nights').alias('avg_stay'),
+#     avg('total_booking_value').alias('avg_booking_value')
+# )
+
+# print("Other countries analysis:")
+# international_stats.select(
+#     col('total_bookings'),
+#     round(col('canceled_bookings') * 100, 1).alias('canceled_bookings_%'),
+#     round(col('avg_price'), 2).alias('avg_price'),
+#     round(col('avg_lead_time'), 1).alias('avg_lead_time'),
+#     round(col('avg_stay'), 1).alias('avg_stay'),
+#     round(col('avg_booking_value'), 2).alias('avg_booking_value')
+# ).show()
+
+# # Portugal vs Others comparison
+# categories = ['Cancellation Rate', 'Average Price', 'Lead Time (days)', 'Booking Value']
+# portugal_values = [56.1, 91.34, 117.8, 274.77]
+# others_values = [19.8, 102.01, 88.1, 370.38]
+
+# x = np.arange(len(categories))
+# width = 0.35
+
+# fig, ax = plt.subplots(figsize=(12, 6))
+# bars1 = ax.bar(x - width/2, portugal_values, width, label='Portugal', color='lightcoral')
+# bars2 = ax.bar(x + width/2, others_values, width, label='Other Countries', color='lightblue')
+
+# ax.set_xlabel('Metrics', fontsize=12)
+# ax.set_ylabel('Values', fontsize=12)
+# ax.set_title('Portugal vs Other Countries Comparison', fontsize=16, fontweight='bold')
+# ax.set_xticks(x)
+# ax.set_xticklabels(categories)
+# ax.legend()
+
+# # Add value labels
+# for bars in [bars1, bars2]:
+#     for bar in bars:
+#         height = bar.get_height()
+#         ax.text(bar.get_x() + bar.get_width()/2., height + height*0.01,
+#                 f'{height:.1f}', ha='center', va='bottom', fontsize=10)
+
+# plt.tight_layout()
+# plt.savefig('../reports/figures/portugal_vs_others.png', dpi=300, bbox_inches='tight')
+# plt.show()
+
+# # ============================== City Hotel vs Resort Hotel Analysis=============================
+# print('\n' + '='*80)
+# print("CITY HOTEL VS RESORT HOTEL ANALYSIS")
+# print('='*80)
+
+# # City hotel analysis
+# city_stats = df_hotel.filter(col("hotel") == "City Hotel").agg(
+#     count("*").alias("total_bookings"),
+#     avg("is_canceled").alias("cancelation_rate"),
+#     avg(when(col("is_zero_price") == False, col("avg_price_per_room"))).alias("avg_price"),
+#     avg("lead_time").alias("avg_lead_time"),
+#     avg("total_nights").alias("avg_stay"),
+#     avg("total_booking_value").alias("avg_booking_value")
+# )
+
+# print("CITY HOTEL Analysis:")
+# city_stats.select(
+#     col("total_bookings"),
+#     round(col("cancelation_rate") * 100, 1).alias("cancelation_rate_%"),
+#     round(col("avg_price"), 2).alias("avg_price_$"),
+#     round(col("avg_lead_time"), 1).alias("avg_lead_time_days"),
+#     round(col("avg_stay"), 1).alias("avg_stay_nights"),
+#     round(col("avg_booking_value"), 2).alias("avg_booking_value_$")
+# ).show()
+
+# # Resort hotel analysis
+# resort_stats = df_hotel.filter(col("hotel") == "Resort Hotel").agg(
+#     count("*").alias("total_bookings"),
+#     avg("is_canceled").alias("cancelation_rate"),
+#     avg(when(col("is_zero_price") == False, col("avg_price_per_room"))).alias("avg_price"),
+#     avg("lead_time").alias("avg_lead_time"),
+#     avg("total_nights").alias("avg_stay"),
+#     avg("total_booking_value").alias("avg_booking_value")
+# )
+
+# print("RESORT HOTEL Analysis:")
+# resort_stats.select(
+#     col("total_bookings"),
+#     round(col("cancelation_rate") * 100, 1).alias("cancelation_rate_%"),
+#     round(col("avg_price"), 2).alias("avg_price_$"),
+#     round(col("avg_lead_time"), 1).alias("avg_lead_time_days"),
+#     round(col("avg_stay"), 1).alias("avg_stay_nights"),
+#     round(col("avg_booking_value"), 2).alias("avg_booking_value_$")
+# ).show()
+
+# # ============================== Lead Time Impact on Cancellation =============================
+# print('\n' + '='*80)
+# print("LEAD TIME IMPACT ON CANCELLATION")
+# print('='*80)
+
+# # creating lead time categories
+# df_hotel = df_hotel.withColumn("lead_time_category", 
+#     when(col("lead_time") <= 7, "Last Minute (≤7 days)")
+#     .when(col("lead_time") <= 30, "Short Term (8-30 days)")
+#     .when(col("lead_time") <= 90, "Medium Term (31-90 days)")
+#     .otherwise("Long Term (>90 days)")
+# )
+
+# # Analyze cancellation by lead time
+# lead_time_analysis = df_hotel.groupBy("lead_time_category").agg(
+#     count("*").alias("total_bookings"),
+#     sum("is_canceled").alias("canceled_bookings"),
+#     avg("is_canceled").alias("cancelation_rate")
+# ).withColumn("cancelation_rate", round(col("cancelation_rate") * 100, 1))
+
+# print("Cancellation Rate by Lead Time (Hotel Dataset):")
+# lead_time_analysis.show()
+
+# # Lead time impact visualization
+# lead_categories = ['Last Minute\n(≤7 days)', 'Short Term\n(8-30 days)', 'Medium Term\n(31-90 days)', 'Long Term\n(>90 days)']
+# cancel_rates_lead = [10.0, 26.5, 35.5, 51.8]
+
+# plt.figure(figsize=(10, 6))
+# bars = plt.bar(lead_categories, cancel_rates_lead, color=['green', 'yellow', 'orange', 'red'])
+# plt.title('Cancellation Rate by Lead Time', fontsize=16, fontweight='bold')
+# plt.ylabel('Cancellation Rate (%)', fontsize=12)
+# plt.xlabel('Booking Lead Time', fontsize=12)
+# plt.ylim(0, 60)
+
+# # Add value labels on bars
+# for bar, rate in zip(bars, cancel_rates_lead):
+#     plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, 
+#              f'{rate}%', ha='center', va='bottom', fontweight='bold')
+
+# plt.tight_layout()
+# plt.savefig('../reports/figures/cancellation_by_lead_time.png', dpi=300, bbox_inches='tight')
+# plt.show()
+
+# # ============================== Monthly Patterns =============================
+# print('\n' + '='*80)
+# print("MONTHLY PATTERNS")
+# print('='*80)
+
+# # Analyze monthly patterns
+# monthly_analysis = df_hotel.groupBy("arrival_month").agg(
+#     count("*").alias("total_bookings"),
+#     sum("is_canceled").alias("canceled_bookings"),
+#     avg("is_canceled").alias("cancelation_rate"),
+#     avg("total_booking_value").alias("avg_booking_value"),
+#     avg("lead_time").alias("avg_lead_time")
+# ).withColumn("cancelation_rate", round(col("cancelation_rate") * 100, 1))
+
+# print("Monthly Patterns (Hotel Dataset):")
+# monthly_analysis.show()
+
+# # Monthly patterns heatmap
+# months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+# cancel_rates_monthly = [24.8, 34.4, 30.6, 38.0, 35.0, 39.6, 37.5, 38.2, 39.2, 38.0, 31.2, 35.0]
+
+# # Create heatmap data
+# heatmap_data = np.array(cancel_rates_monthly).reshape(1, 12)
+
+# plt.figure(figsize=(14, 4))
+# im = plt.imshow(heatmap_data, cmap='RdYlGn_r', aspect='auto')
+# plt.colorbar(im, label='Cancellation Rate (%)')
+# plt.title('Monthly Cancellation Rate Heatmap', fontsize=16, fontweight='bold')
+# plt.xlabel('Month', fontsize=12)
+# plt.yticks([])
+# plt.xticks(range(12), months)
+
+# # Add text annotations
+# for i in range(12):
+#     plt.text(i, 0, f'{cancel_rates_monthly[i]:.1f}%', ha='center', va='center', 
+#              fontweight='bold', color='white' if cancel_rates_monthly[i] > 35 else 'black')
+
+# plt.tight_layout()
+# plt.savefig('../reports/figures/monthly_cancellation_heatmap.png', dpi=300, bbox_inches='tight')
+# plt.show()
+
+
+# ===========================================================
+# ==================== Bivariate Analysis ====================
+# ===========================================================
+
+# ============================== Price vs Cancellation Rate =============================
 print('\n' + '='*80)
-print("PORTUGAL VS INTERNATIONAL ANALYSIS")
+print("PRICE VS CANCELLATION RATE")
 print('='*80)
 
-# Portugal analysis
-portugal_stats = df_hotel.filter(col('country') == 'PRT').agg(
-    count("*").alias("total_bookings"), 
-    sum('is_canceled').alias("canceled_bookings"),
-    avg(when(col('is_zero_price') == False, col('avg_price_per_room'))).alias('avg_price'),
-    avg('lead_time').alias('avg_lead_time'), 
-    avg('total_nights').alias('avg_stay'),
-    avg('total_booking_value').alias('avg_booking_value')
-)
+# Analyze cancellation rates by price ranges
+df_hotel = df_hotel.withColumn("price_category", 
+    when(col("avg_price_per_room") <= 50, "Budget ($0-50)")
+    .when(col("avg_price_per_room") <= 100, "Mid ($51-100)")
+    .when(col("avg_price_per_room") <= 150, "Premium ($101-150)")
+    .otherwise("Luxury (>$150)"))
 
-print("Portugal analysis:")
-portugal_stats.select(
-    col('total_bookings'),
-    round(col('canceled_bookings') * 100, 1).alias('canceled_bookings_%'),
-    round(col('avg_price'), 2).alias('avg_price'),
-    round(col('avg_lead_time'), 1).alias('avg_lead_time'),
-    round(col('avg_stay'), 1).alias('avg_stay'),
-    round(col('avg_booking_value'), 2).alias('avg_booking_value')
-).show()
+price_cancel_analysis = df_hotel.groupBy("price_category").agg(
+    count("*").alias("total_bookings"),
+    sum("is_canceled").alias("canceled_bookings"),
+    avg("is_canceled").alias("cancelation_rate"),
+    avg("avg_price_per_room").alias("avg_price"),
+    avg("total_booking_value").alias("avg_booking_value")
+).withColumn("cancelation_rate", round(col("cancelation_rate") * 100, 1))
 
-# International analysis
-international_stats = df_hotel.filter(col('country') != 'PRT').agg(
-    count("*").alias("total_bookings"), 
-    sum('is_canceled').alias("canceled_bookings"),
-    avg(when(col('is_zero_price') == False, col('avg_price_per_room'))).alias('avg_price'),
-    avg('lead_time').alias('avg_lead_time'), 
-    avg('total_nights').alias('avg_stay'),
-    avg('total_booking_value').alias('avg_booking_value')
-)
+print("Cancellation by Price Category:")
+price_cancel_analysis.orderBy("avg_price").show()
 
-print("Other countries analysis:")
-international_stats.select(
-    col('total_bookings'),
-    round(col('canceled_bookings') * 100, 1).alias('canceled_bookings_%'),
-    round(col('avg_price'), 2).alias('avg_price'),
-    round(col('avg_lead_time'), 1).alias('avg_lead_time'),
-    round(col('avg_stay'), 1).alias('avg_stay'),
-    round(col('avg_booking_value'), 2).alias('avg_booking_value')
-).show()
+# Price vs Cancellation Visualization
+price_categories = ['Budget\n($0-50)', 'Mid\n($51-100)', 'Premium\n($101-150)', 'Luxury\n(>$150)']
+cancel_rates = [21.1, 39.1, 37.9, 33.9]
+avg_prices = [32.3, 76.5, 120.6, 187.4]
 
-# Portugal vs Others comparison
-categories = ['Cancellation Rate', 'Average Price', 'Lead Time (days)', 'Booking Value']
-portugal_values = [56.1, 91.34, 117.8, 274.77]
-others_values = [19.8, 102.01, 88.1, 370.38]
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
-x = np.arange(len(categories))
-width = 0.35
-
-fig, ax = plt.subplots(figsize=(12, 6))
-bars1 = ax.bar(x - width/2, portugal_values, width, label='Portugal', color='lightcoral')
-bars2 = ax.bar(x + width/2, others_values, width, label='Other Countries', color='lightblue')
-
-ax.set_xlabel('Metrics', fontsize=12)
-ax.set_ylabel('Values', fontsize=12)
-ax.set_title('Portugal vs Other Countries Comparison', fontsize=16, fontweight='bold')
-ax.set_xticks(x)
-ax.set_xticklabels(categories)
-ax.legend()
+# Cancellation rates
+bars1 = ax1.bar(price_categories, cancel_rates, color=['green', 'red', 'orange', 'orange'])
+ax1.set_title('Cancellation Rate by Price Category', fontsize=14, fontweight='bold')
+ax1.set_ylabel('Cancellation Rate (%)')
+ax1.set_ylim(0, 45)
 
 # Add value labels
-for bars in [bars1, bars2]:
-    for bar in bars:
-        height = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width()/2., height + height*0.01,
-                f'{height:.1f}', ha='center', va='bottom', fontsize=10)
+for bar, rate in zip(bars1, cancel_rates):
+    ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5, 
+             f'{rate}%', ha='center', va='bottom', fontweight='bold')
+
+# Average prices
+bars2 = ax2.bar(price_categories, avg_prices, color=['lightgreen', 'lightcoral', 'lightsalmon', 'gold'])
+ax2.set_title('Average Price by Category', fontsize=14, fontweight='bold')
+ax2.set_ylabel('Average Price ($)')
+
+# Add value labels
+for bar, price in zip(bars2, avg_prices):
+    ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 2, 
+             f'${price:.0f}', ha='center', va='bottom', fontweight='bold')
 
 plt.tight_layout()
-plt.savefig('../reports/figures/portugal_vs_others.png', dpi=300, bbox_inches='tight')
+plt.savefig('../reports/figures/bivariate/price_vs_cancellation.png', dpi=300, bbox_inches='tight')
+print("✓ Saved: bivariate/price_vs_cancellation.png")
 plt.show()
 
-# ============================== City Hotel vs Resort Hotel Analysis=============================
+# ============================== Lead Time vs Cancellation Rate =============================
 print('\n' + '='*80)
-print("CITY HOTEL VS RESORT HOTEL ANALYSIS")
+print("LEAD TIME VS CANCELLATION RATE")
 print('='*80)
 
-# City hotel analysis
-city_stats = df_hotel.filter(col("hotel") == "City Hotel").agg(
-    count("*").alias("total_bookings"),
-    avg("is_canceled").alias("cancelation_rate"),
-    avg(when(col("is_zero_price") == False, col("avg_price_per_room"))).alias("avg_price"),
-    avg("lead_time").alias("avg_lead_time"),
-    avg("total_nights").alias("avg_stay"),
-    avg("total_booking_value").alias("avg_booking_value")
-)
-
-print("CITY HOTEL Analysis:")
-city_stats.select(
-    col("total_bookings"),
-    round(col("cancelation_rate") * 100, 1).alias("cancelation_rate_%"),
-    round(col("avg_price"), 2).alias("avg_price_$"),
-    round(col("avg_lead_time"), 1).alias("avg_lead_time_days"),
-    round(col("avg_stay"), 1).alias("avg_stay_nights"),
-    round(col("avg_booking_value"), 2).alias("avg_booking_value_$")
-).show()
-
-# Resort hotel analysis
-resort_stats = df_hotel.filter(col("hotel") == "Resort Hotel").agg(
-    count("*").alias("total_bookings"),
-    avg("is_canceled").alias("cancelation_rate"),
-    avg(when(col("is_zero_price") == False, col("avg_price_per_room"))).alias("avg_price"),
-    avg("lead_time").alias("avg_lead_time"),
-    avg("total_nights").alias("avg_stay"),
-    avg("total_booking_value").alias("avg_booking_value")
-)
-
-print("RESORT HOTEL Analysis:")
-resort_stats.select(
-    col("total_bookings"),
-    round(col("cancelation_rate") * 100, 1).alias("cancelation_rate_%"),
-    round(col("avg_price"), 2).alias("avg_price_$"),
-    round(col("avg_lead_time"), 1).alias("avg_lead_time_days"),
-    round(col("avg_stay"), 1).alias("avg_stay_nights"),
-    round(col("avg_booking_value"), 2).alias("avg_booking_value_$")
-).show()
-
-# ============================== Lead Time Impact on Cancellation =============================
-print('\n' + '='*80)
-print("LEAD TIME IMPACT ON CANCELLATION")
-print('='*80)
-
-# creating lead time categories
+# Create lead time categories
 df_hotel = df_hotel.withColumn("lead_time_category", 
     when(col("lead_time") <= 7, "Last Minute (≤7 days)")
     .when(col("lead_time") <= 30, "Short Term (8-30 days)")
     .when(col("lead_time") <= 90, "Medium Term (31-90 days)")
-    .otherwise("Long Term (>90 days)")
-)
+    .otherwise("Long Term (>90 days)"))
 
-# Analyze cancellation by lead time
-lead_time_analysis = df_hotel.groupBy("lead_time_category").agg(
+lead_time_price_analysis = df_hotel.groupBy("lead_time_category").agg(
     count("*").alias("total_bookings"),
-    sum("is_canceled").alias("canceled_bookings"),
+    avg("avg_price_per_room").alias("avg_price"),
+    avg("lead_time").alias("avg_lead_time"),
+    avg("is_canceled").alias("cancelation_rate"),
+    avg("total_booking_value").alias("avg_booking_value")
+).withColumn("cancelation_rate", round(col("cancelation_rate") * 100, 1))
+
+print("Lead Time vs Price Analysis:")
+lead_time_price_analysis.orderBy("avg_lead_time").show()
+
+# Lead Time vs Cancellation Scatter Plot
+lead_times = [2.3, 17.7, 57.1, 205.0]
+cancel_rates_lead = [10.0, 26.5, 35.5, 51.8]
+avg_prices_lead = [87.3, 102.9, 101.5, 91.7]
+categories = ['Last Minute', 'Short Term', 'Medium Term', 'Long Term']
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+
+# Lead Time vs Cancellation
+ax1.scatter(lead_times, cancel_rates_lead, s=200, c=['green', 'yellow', 'orange', 'red'], alpha=0.7)
+for i, cat in enumerate(categories):
+    ax1.annotate(cat, (lead_times[i], cancel_rates_lead[i]), 
+                xytext=(5, 5), textcoords='offset points', fontsize=10)
+ax1.set_xlabel('Average Lead Time (days)')
+ax1.set_ylabel('Cancellation Rate (%)')
+ax1.set_title('Lead Time vs Cancellation Rate', fontsize=14, fontweight='bold')
+ax1.grid(True, alpha=0.3)
+
+# Lead Time vs Price
+ax2.scatter(lead_times, avg_prices_lead, s=200, c=['green', 'yellow', 'orange', 'red'], alpha=0.7)
+for i, cat in enumerate(categories):
+    ax2.annotate(cat, (lead_times[i], avg_prices_lead[i]), 
+                xytext=(5, 5), textcoords='offset points', fontsize=10)
+ax2.set_xlabel('Average Lead Time (days)')
+ax2.set_ylabel('Average Price ($)')
+ax2.set_title('Lead Time vs Average Price', fontsize=14, fontweight='bold')
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.savefig('../reports/figures/bivariate/lead_time_impact.png', dpi=300, bbox_inches='tight')
+print("✓ Saved: bivariate/lead_time_impact.png")
+plt.show()
+
+# ============================== Stay Duration vs Market Segment =============================
+print('\n' + '='*80)
+print("STAY DURATION VS MARKET SEGMENT")
+print('='*80)
+
+# Create stay duration categories
+df_hotel = df_hotel.withColumn("stay_category", 
+    when(col("total_nights") == 1, "1 Night")
+    .when(col("total_nights") == 2, "2 Nights")
+    .when(col("total_nights") == 3, "3 Nights")
+    .when(col("total_nights") <= 7, "4-7 Nights")
+    .otherwise("Long Stay (>7 nights)"))
+
+stay_segment_analysis = df_hotel.groupBy("market_segment_type", "stay_category").agg(
+    count("*").alias("bookings"),
+    avg("avg_price_per_room").alias("avg_price"),
+    avg("is_canceled").alias("cancelation_rate"),
+    avg("total_booking_value").alias("avg_booking_value")
+).withColumn("cancelation_rate", round(col("cancelation_rate") * 100, 1))
+
+print("Stay Duration by Market Segment (Top combinations):")
+stay_segment_analysis.orderBy(col("bookings").desc()).show(20)
+
+# ============================== Weekend vs Weekday by Country =============================
+print('\n' + '='*80)
+print("WEEKEND VS WEEKDAY BY COUNTRY")
+print('='*80)
+
+# Analyze weekend preferences by top countries
+top_countries = df_hotel.groupBy("country").count().orderBy(col("count").desc()).limit(10)
+top_country_list = [row["country"] for row in top_countries.collect()]
+
+weekend_preferences = df_hotel.filter(col("country").isin(top_country_list)).groupBy("country").agg(
+    count("*").alias("total_bookings"),
+    avg("stays_in_weekend_nights").alias("avg_weekend_nights"),
+    avg("stays_in_week_nights").alias("avg_weekday_nights"),
     avg("is_canceled").alias("cancelation_rate")
 ).withColumn("cancelation_rate", round(col("cancelation_rate") * 100, 1))
 
-print("Cancellation Rate by Lead Time (Hotel Dataset):")
-lead_time_analysis.show()
+print("Weekend vs Weekday Preferences by Top Countries:")
+weekend_preferences.orderBy(col("total_bookings").desc()).show()
 
-# Lead time impact visualization
-lead_categories = ['Last Minute\n(≤7 days)', 'Short Term\n(8-30 days)', 'Medium Term\n(31-90 days)', 'Long Term\n(>90 days)']
-cancel_rates_lead = [10.0, 26.5, 35.5, 51.8]
-
-plt.figure(figsize=(10, 6))
-bars = plt.bar(lead_categories, cancel_rates_lead, color=['green', 'yellow', 'orange', 'red'])
-plt.title('Cancellation Rate by Lead Time', fontsize=16, fontweight='bold')
-plt.ylabel('Cancellation Rate (%)', fontsize=12)
-plt.xlabel('Booking Lead Time', fontsize=12)
-plt.ylim(0, 60)
-
-# Add value labels on bars
-for bar, rate in zip(bars, cancel_rates_lead):
-    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, 
-             f'{rate}%', ha='center', va='bottom', fontweight='bold')
-
-plt.tight_layout()
-plt.savefig('../reports/figures/cancellation_by_lead_time.png', dpi=300, bbox_inches='tight')
-plt.show()
-
-# ============================== Monthly Patterns =============================
+# ============================== Seasonal Patterns by Hotel Type =============================
 print('\n' + '='*80)
-print("MONTHLY PATTERNS")
+print("SEASONAL PATTERNS BY HOTEL TYPE")
 print('='*80)
 
-# Analyze monthly patterns
-monthly_analysis = df_hotel.groupBy("arrival_month").agg(
-    count("*").alias("total_bookings"),
-    sum("is_canceled").alias("canceled_bookings"),
+seasonal_hotel_analysis = df_hotel.groupBy("hotel", "arrival_month").agg(
+    count("*").alias("bookings"),
+    avg("avg_price_per_room").alias("avg_price"),
     avg("is_canceled").alias("cancelation_rate"),
-    avg("total_booking_value").alias("avg_booking_value"),
-    avg("lead_time").alias("avg_lead_time")
+    avg("total_booking_value").alias("avg_booking_value")
 ).withColumn("cancelation_rate", round(col("cancelation_rate") * 100, 1))
 
-print("Monthly Patterns (Hotel Dataset):")
-monthly_analysis.show()
+print("Seasonal Patterns by Hotel Type (Top months):")
+seasonal_hotel_analysis.orderBy(col("bookings").desc()).show(20)
+    
+# ============================== Customer Behavior Clusters =============================
+print('\n' + '='*80)
+print("CUSTOMER BEHAVIOR CLUSTERS")
+print('='*80)
 
-# Monthly patterns heatmap
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-cancel_rates_monthly = [24.8, 34.4, 30.6, 38.0, 35.0, 39.6, 37.5, 38.2, 39.2, 38.0, 31.2, 35.0]
+# Create customer behavior clusters
+df_hotel = df_hotel.withColumn("customer_type", 
+    when((col("lead_time") <= 7) & (col("total_nights") <= 2), "Last-Minute Short")
+    .when((col("lead_time") > 90) & (col("total_nights") > 7), "Planner Long-Stay")
+    .when((col("lead_time") <= 30) & (col("total_nights") <= 3), "Quick Getaway")
+    .when(col("lead_time") > 180, "Ultra Planner")
+    .otherwise("Regular Traveler"))
 
-# Create heatmap data
-heatmap_data = np.array(cancel_rates_monthly).reshape(1, 12)
+behavior_clusters = df_hotel.groupBy("customer_type").agg(
+    count("*").alias("total_bookings"),
+    avg("avg_price_per_room").alias("avg_price"),
+    avg("lead_time").alias("avg_lead_time"),
+    avg("total_nights").alias("avg_stay"),
+    avg("is_canceled").alias("cancelation_rate"),
+    avg("total_booking_value").alias("avg_booking_value")
+).withColumn("cancelation_rate", round(col("cancelation_rate") * 100, 1))
 
-plt.figure(figsize=(14, 4))
-im = plt.imshow(heatmap_data, cmap='RdYlGn_r', aspect='auto')
-plt.colorbar(im, label='Cancellation Rate (%)')
-plt.title('Monthly Cancellation Rate Heatmap', fontsize=16, fontweight='bold')
-plt.xlabel('Month', fontsize=12)
-plt.yticks([])
-plt.xticks(range(12), months)
+print("Customer Behavior Clusters:")
+behavior_clusters.orderBy(col("total_bookings").desc()).show()
 
-# Add text annotations
-for i in range(12):
-    plt.text(i, 0, f'{cancel_rates_monthly[i]:.1f}%', ha='center', va='center', 
-             fontweight='bold', color='white' if cancel_rates_monthly[i] > 35 else 'black')
+# Customer Behavior Clusters
+customer_types = ['Ultra Planner', 'Regular Traveler', 'Quick Getaway', 'Last-Minute Short', 'Planner Long-Stay']
+bookings = [15340, 40531, 10479, 10271, 2082]
+cancel_rates_clusters = [61.5, 36.8, 24.0, 9.0, 31.9]
+avg_values = [271.2, 391.6, 220.6, 110.2, 1062.0]
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
+
+# Bookings by customer type
+bars1 = ax1.barh(customer_types, bookings, color=['red', 'orange', 'yellow', 'green', 'blue'])
+ax1.set_xlabel('Number of Bookings')
+ax1.set_title('Bookings by Customer Type', fontsize=14, fontweight='bold')
+
+# Add value labels
+for i, (bar, booking) in enumerate(zip(bars1, bookings)):
+    ax1.text(bar.get_width() + 500, bar.get_y() + bar.get_height()/2, 
+             f'{booking:,}', ha='left', va='center', fontweight='bold')
+
+# Cancellation rates by customer type
+bars2 = ax2.barh(customer_types, cancel_rates_clusters, color=['red', 'orange', 'yellow', 'green', 'blue'])
+ax2.set_xlabel('Cancellation Rate (%)')
+ax2.set_title('Cancellation Rate by Customer Type', fontsize=14, fontweight='bold')
+ax2.set_xlim(0, 70)
+
+# Add value labels
+for i, (bar, rate) in enumerate(zip(bars2, cancel_rates_clusters)):
+    ax2.text(bar.get_width() + 1, bar.get_y() + bar.get_height()/2, 
+             f'{rate}%', ha='left', va='center', fontweight='bold')
 
 plt.tight_layout()
-plt.savefig('../reports/figures/monthly_cancellation_heatmap.png', dpi=300, bbox_inches='tight')
+plt.savefig('../reports/figures/bivariate/customer_behavior_clusters.png', dpi=300, bbox_inches='tight')
+print("✓ Saved: bivariate/customer_behavior_clusters.png")
 plt.show()
+    
