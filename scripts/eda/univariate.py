@@ -20,8 +20,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 matplotlib.use('Agg')
 
-
-# Create derived columns in Spark
 print("\n=== CREATING DERIVED COLUMNS ===")
 
 # Create is_canceled column from booking_status
@@ -51,7 +49,7 @@ df_customer = df_customer.withColumn("is_zero_price",
 df_hotel = df_hotel.withColumn("is_zero_price", 
     when(col("avg_price_per_room") == 0, True).otherwise(False))
 
-print("✓ Derived columns created successfully!")
+print("Derived columns created successfully!")
 
 # ===========================================================
 # ==================== Univariate Analysis ====================
@@ -77,9 +75,8 @@ hotel_cancel_by_segment = df_hotel.groupBy("market_segment_type").agg(
 print("Hotel dataset cancellation by segment:")
 hotel_cancel_by_segment.show()
 
-# creating a simple bar chart for cancellation rates
+# bar chart for cancellation rates by segment
 
-# Data from your analysis
 segments = ['Groups', 'Online TA', 'Offline TA/TO', 'Corporate', 'Aviation', 'Direct', 'Complementary']
 cancel_rates = [62.3, 33.9, 34.5, 15.9, 22.8, 15.3, 11.7]
 
@@ -90,7 +87,7 @@ plt.ylabel('Cancellation Rate (%)', fontsize=12)
 plt.xticks(rotation=45, ha='right')
 plt.ylim(0, 70)
 
-# Color code: Red (>50%), Orange (30-50%), Green (<30%)
+# color code: Red (>50%), Orange (30-50%), Green (<30%)
 for bar, rate in zip(bars, cancel_rates):
     if rate > 50:
         bar.set_color('red')
@@ -148,7 +145,7 @@ international_stats.select(
     round(col('avg_booking_value'), 2).alias('avg_booking_value')
 ).show()
 
-# Portugal vs Others comparison
+# Portugal vs Others comparison bar chart
 categories = ['Cancellation Rate', 'Average Price', 'Lead Time (days)', 'Booking Value']
 portugal_values = [56.1, 91.34, 117.8, 274.77]
 others_values = [19.8, 102.01, 88.1, 370.38]
@@ -167,7 +164,7 @@ ax.set_xticks(x)
 ax.set_xticklabels(categories)
 ax.legend()
 
-# Add value labels
+# add value labels
 for bars in [bars1, bars2]:
     for bar in bars:
         height = bar.get_height()
@@ -246,7 +243,7 @@ lead_time_analysis = df_hotel.groupBy("lead_time_category").agg(
 print("Cancellation Rate by Lead Time (Hotel Dataset):")
 lead_time_analysis.show()
 
-# Lead time impact visualization
+# Lead time impact  bar chart
 lead_categories = ['Last Minute\n(≤7 days)', 'Short Term\n(8-30 days)', 'Medium Term\n(31-90 days)', 'Long Term\n(>90 days)']
 cancel_rates_lead = [10.0, 26.5, 35.5, 51.8]
 
@@ -257,7 +254,7 @@ plt.ylabel('Cancellation Rate (%)', fontsize=12)
 plt.xlabel('Booking Lead Time', fontsize=12)
 plt.ylim(0, 60)
 
-# Add value labels on bars
+# add value labels 
 for bar, rate in zip(bars, cancel_rates_lead):
     plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, 
              f'{rate}%', ha='center', va='bottom', fontweight='bold')
@@ -286,8 +283,6 @@ monthly_analysis.show()
 # Monthly patterns heatmap
 months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 cancel_rates_monthly = [24.8, 34.4, 30.6, 38.0, 35.0, 39.6, 37.5, 38.2, 39.2, 38.0, 31.2, 35.0]
-
-# Create heatmap data
 heatmap_data = np.array(cancel_rates_monthly).reshape(1, 12)
 
 plt.figure(figsize=(14, 4))
@@ -298,7 +293,7 @@ plt.xlabel('Month', fontsize=12)
 plt.yticks([])
 plt.xticks(range(12), months)
 
-# Add text annotations
+# add text labels
 for i in range(12):
     plt.text(i, 0, f'{cancel_rates_monthly[i]:.1f}%', ha='center', va='center', 
              fontweight='bold', color='white' if cancel_rates_monthly[i] > 35 else 'black')

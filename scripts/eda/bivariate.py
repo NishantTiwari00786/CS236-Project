@@ -18,8 +18,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 matplotlib.use('Agg')
 
-
-# Create derived columns in Spark
 print("\n=== CREATING DERIVED COLUMNS ===")
 
 # Create is_canceled column from booking_status
@@ -80,30 +78,30 @@ price_cancel_analysis = df_hotel.groupBy("price_category").agg(
 print("Cancellation by Price Category:")
 price_cancel_analysis.orderBy("avg_price").show()
 
-# Price vs Cancellation Visualization
+# price vs cancellation bar chart
 price_categories = ['Budget\n($0-50)', 'Mid\n($51-100)', 'Premium\n($101-150)', 'Luxury\n(>$150)']
 cancel_rates = [21.1, 39.1, 37.9, 33.9]
 avg_prices = [32.3, 76.5, 120.6, 187.4]
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
-# Cancellation rates
+# cancellation rates
 bars1 = ax1.bar(price_categories, cancel_rates, color=['green', 'red', 'orange', 'orange'])
 ax1.set_title('Cancellation Rate by Price Category', fontsize=14, fontweight='bold')
 ax1.set_ylabel('Cancellation Rate (%)')
 ax1.set_ylim(0, 45)
 
-# Add value labels
+# add value labels
 for bar, rate in zip(bars1, cancel_rates):
     ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5, 
              f'{rate}%', ha='center', va='bottom', fontweight='bold')
 
-# Average prices
+# average prices
 bars2 = ax2.bar(price_categories, avg_prices, color=['lightgreen', 'lightcoral', 'lightsalmon', 'gold'])
 ax2.set_title('Average Price by Category', fontsize=14, fontweight='bold')
 ax2.set_ylabel('Average Price ($)')
 
-# Add value labels
+# add value labels
 for bar, price in zip(bars2, avg_prices):
     ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 2, 
              f'${price:.0f}', ha='center', va='bottom', fontweight='bold')
@@ -118,7 +116,7 @@ print('\n' + '='*80)
 print("LEAD TIME VS CANCELLATION RATE")
 print('='*80)
 
-# Create lead time categories
+# create lead time categories
 df_hotel = df_hotel.withColumn("lead_time_category", 
     when(col("lead_time") <= 7, "Last Minute (≤7 days)")
     .when(col("lead_time") <= 30, "Short Term (8-30 days)")
@@ -136,7 +134,7 @@ lead_time_price_analysis = df_hotel.groupBy("lead_time_category").agg(
 print("Lead Time vs Price Analysis:")
 lead_time_price_analysis.orderBy("avg_lead_time").show()
 
-# Lead Time vs Cancellation Scatter Plot
+# lead time vs cancellation scatter plot
 lead_times = [2.3, 17.7, 57.1, 205.0]
 cancel_rates_lead = [10.0, 26.5, 35.5, 51.8]
 avg_prices_lead = [87.3, 102.9, 101.5, 91.7]
@@ -144,7 +142,7 @@ categories = ['Last Minute', 'Short Term', 'Medium Term', 'Long Term']
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
-# Lead Time vs Cancellation
+# lead time vs cancellation
 ax1.scatter(lead_times, cancel_rates_lead, s=200, c=['green', 'yellow', 'orange', 'red'], alpha=0.7)
 for i, cat in enumerate(categories):
     ax1.annotate(cat, (lead_times[i], cancel_rates_lead[i]), 
@@ -154,7 +152,7 @@ ax1.set_ylabel('Cancellation Rate (%)')
 ax1.set_title('Lead Time vs Cancellation Rate', fontsize=14, fontweight='bold')
 ax1.grid(True, alpha=0.3)
 
-# Lead Time vs Price
+# lead time vs price
 ax2.scatter(lead_times, avg_prices_lead, s=200, c=['green', 'yellow', 'orange', 'red'], alpha=0.7)
 for i, cat in enumerate(categories):
     ax2.annotate(cat, (lead_times[i], avg_prices_lead[i]), 
@@ -174,7 +172,7 @@ print('\n' + '='*80)
 print("STAY DURATION VS MARKET SEGMENT")
 print('='*80)
 
-# Create stay duration categories
+# create stay duration categories
 df_hotel = df_hotel.withColumn("stay_category", 
     when(col("total_nights") == 1, "1 Night")
     .when(col("total_nights") == 2, "2 Nights")
@@ -197,7 +195,7 @@ print('\n' + '='*80)
 print("WEEKEND VS WEEKDAY BY COUNTRY")
 print('='*80)
 
-# Analyze weekend preferences by top countries
+# getting top 10 countries
 top_countries = df_hotel.groupBy("country").count().orderBy(col("count").desc()).limit(10)
 top_country_list = [row["country"] for row in top_countries.collect()]
 
@@ -211,13 +209,12 @@ weekend_preferences = df_hotel.filter(col("country").isin(top_country_list)).gro
 print("Weekend vs Weekday Preferences by Top Countries:")
 weekend_preferences.orderBy(col("total_bookings").desc()).show()
 
-# Weekend vs Weekday Preferences by Country
+# weekend vs weekday preferences by country heatmap
 countries = ['PRT', 'GBR', 'FRA', 'ESP', 'DEU', 'ITA', 'IRL', 'BEL', 'NLD', 'BRA']
 weekend_nights = [0.72, 1.39, 0.93, 0.86, 0.94, 0.98, 1.52, 1.04, 1.07, 0.98]
 weekday_nights = [2.16, 3.55, 2.48, 2.20, 2.45, 2.20, 3.83, 2.51, 2.67, 2.41]
 cancel_rates_country = [56.1, 16.1, 14.5, 21.9, 13.3, 32.1, 19.4, 16.7, 15.5, 31.8]
 
-# Create heatmap data
 heatmap_data = np.array([weekend_nights, weekday_nights, cancel_rates_country])
 
 plt.figure(figsize=(12, 6))
@@ -230,7 +227,7 @@ plt.ylabel('Metrics')
 plt.xticks(range(len(countries)), countries)
 plt.yticks(range(3), ['Weekend Nights', 'Weekday Nights', 'Cancellation Rate (%)'])
 
-# Add text annotations
+# add text labels
 for i in range(3):
     for j in range(len(countries)):
         text = f'{heatmap_data[i, j]:.1f}'
@@ -262,7 +259,7 @@ print('\n' + '='*80)
 print("CUSTOMER BEHAVIOR CLUSTERS")
 print('='*80)
 
-# Create customer behavior clusters
+# creating customer behavior clusters
 df_hotel = df_hotel.withColumn("customer_type", 
     when((col("lead_time") <= 7) & (col("total_nights") <= 2), "Last-Minute Short")
     .when((col("lead_time") > 90) & (col("total_nights") > 7), "Planner Long-Stay")
@@ -282,7 +279,7 @@ behavior_clusters = df_hotel.groupBy("customer_type").agg(
 print("Customer Behavior Clusters:")
 behavior_clusters.orderBy(col("total_bookings").desc()).show()
 
-# Customer Behavior Clusters
+# customer behavior clusters
 customer_types = ['Ultra Planner', 'Regular Traveler', 'Quick Getaway', 'Last-Minute Short', 'Planner Long-Stay']
 bookings = [15340, 40531, 10479, 10271, 2082]
 cancel_rates_clusters = [61.5, 36.8, 24.0, 9.0, 31.9]
@@ -290,23 +287,23 @@ avg_values = [271.2, 391.6, 220.6, 110.2, 1062.0]
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
 
-# Bookings by customer type
+# bookings by customer type
 bars1 = ax1.barh(customer_types, bookings, color=['red', 'orange', 'yellow', 'green', 'blue'])
 ax1.set_xlabel('Number of Bookings')
 ax1.set_title('Bookings by Customer Type', fontsize=14, fontweight='bold')
 
-# Add value labels
+# add value labels
 for i, (bar, booking) in enumerate(zip(bars1, bookings)):
     ax1.text(bar.get_width() + 500, bar.get_y() + bar.get_height()/2, 
              f'{booking:,}', ha='left', va='center', fontweight='bold')
 
-# Cancellation rates by customer type
+# cancellation rates by customer type
 bars2 = ax2.barh(customer_types, cancel_rates_clusters, color=['red', 'orange', 'yellow', 'green', 'blue'])
 ax2.set_xlabel('Cancellation Rate (%)')
 ax2.set_title('Cancellation Rate by Customer Type', fontsize=14, fontweight='bold')
 ax2.set_xlim(0, 70)
 
-# Add value labels
+# add value labels
 for i, (bar, rate) in enumerate(zip(bars2, cancel_rates_clusters)):
     ax2.text(bar.get_width() + 1, bar.get_y() + bar.get_height()/2, 
              f'{rate}%', ha='left', va='center', fontweight='bold')
