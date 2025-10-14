@@ -64,6 +64,10 @@ distinct_country = df_hotel.select("country").distinct().count()
 print("Distinct Country: ", distinct_country)
 
 
+distinct_hotelRows = df_hotel.distinct().count()
+totalRows = df_hotel.count()
+print("Distinct Hotel Rows: ", distinct_hotelRows, "out of ", totalRows) 
+
 
 # checking for null values in customer-reservations dataset: 
 
@@ -152,4 +156,15 @@ df_hotel.select(
 
 
 
+# check for the duplicate row that we found the hotel-booking dataset:
+
+# used this for reference: https://sparkbyexamples.com/pyspark/pyspark-groupby-explained-with-example/
+
+from pyspark.sql.functions import count 
+df_hotel.groupBy(df_hotel.columns).agg(count("*").alias("count")).filter(col("count") > 1).show()
+
+# just a check for duplicate row in customer dataset: 
+#from pyspark.sql.functions import count 
+#df_customer.groupBy(df_customer.columns).agg(count("*").alias("count")).filter(col("count") > 1).show()
+# 
 
