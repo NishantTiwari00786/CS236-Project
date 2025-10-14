@@ -7,7 +7,7 @@ import os
 
 
 # created a check here just in case if the logs folder is not present on my partner's end
-os.makedirs("logs', exist_ok = True")
+os.makedirs("logs", exist_ok = True)
 
 
 
@@ -54,6 +54,9 @@ df_hotel.show()
 
 df_customer.printSchema()
 df_hotel.printSchema()
+
+
+
 
 
 
