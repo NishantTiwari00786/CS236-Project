@@ -181,3 +181,6 @@ df_hotel.groupBy("market_segment_type").count().show()
 # Numerical number of booking that we cancelled/ not cancelled: 
 
 df_customer.groupBy("Booking_Status").count().show()
+
+
+
