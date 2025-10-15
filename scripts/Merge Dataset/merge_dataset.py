@@ -114,7 +114,7 @@ df_hotel_cleaned = df_hotel_cleaned.select(final_columns)
 # merging both datasets
 df_unified = df_customer_cleaned.unionByName(df_hotel_cleaned)
 
-df_unified.show(100000)
+df_unified.show(20)
 df_unified.printSchema()
 
 
