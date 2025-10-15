@@ -17,7 +17,7 @@ from pyspark.sql.functions import col, when
 
 
 
-df_customer = spark.read.csv("/Users/nishanttiwari/Desktop/CS236-Project/data/raw/CS236_Project_Fall2025_Datasets/customer-reservations.csv", header = True, inferSchema = True)
+df_customer = spark.read.csv("data/raw/CS236_Project_Fall2025_Datasets/customer-reservations.csv", header = True, inferSchema = True)
 
 df_hotel = spark.read.csv("data/raw/CS236_Project_Fall2025_Datasets/hotel-booking.csv", header = True, inferSchema = True)
 
