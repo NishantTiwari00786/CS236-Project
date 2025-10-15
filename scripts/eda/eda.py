@@ -11,7 +11,7 @@ spark = SparkSession.builder.appName("LoadingDataSet").getOrCreate() # generatin
 
 # Loading both the datasets
 
-df_customer = spark.read.csv("/Users/nishanttiwari/Desktop/CS236-Project/data/raw/CS236_Project_Fall2025_Datasets/customer-reservations.csv", header = True, inferSchema = True)
+df_customer = spark.read.csv("data/raw/CS236_Project_Fall2025_Datasets/customer-reservations.csv", header = True, inferSchema = True)
 
 df_hotel = spark.read.csv("data/raw/CS236_Project_Fall2025_Datasets/hotel-booking.csv", header = True, inferSchema = True)
 
@@ -181,6 +181,3 @@ df_hotel.groupBy("market_segment_type").count().show()
 # Numerical number of booking that we cancelled/ not cancelled: 
 
 df_customer.groupBy("Booking_Status").count().show()
-
-
-
