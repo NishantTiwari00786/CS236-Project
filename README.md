@@ -1,6 +1,6 @@
 # Hotel Booking Cancellation Analysis
 
-A comprehensive Exploratory Data Analysis (EDA) project analyzing hotel booking cancellation patterns using Apache Spark and Python.
+A comprehensive Exploratory Data Analysis (EDA) project analyzing hotel booking cancellation patterns using Pyspark
 
 ## Project Overview
 
