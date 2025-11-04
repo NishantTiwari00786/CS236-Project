@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 
 spark = SparkSession.builder \
     .appName("database-population") \
-    .config("spark.jars", "/Users/nishanttiwari/Desktop/postgresql-42.7.8.jar")\
+    .config("spark.jars", "JARS/postgresql-42.7.8.jar")\
     .getOrCreate()
     
 # postgreSQL connection information 
