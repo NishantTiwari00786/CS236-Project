@@ -4,15 +4,16 @@ A comprehensive Exploratory Data Analysis (EDA) project analyzing hotel booking 
 
 ## Project Overview
 
-This project analyzes two hotel booking datasets to understand cancellation patterns and customer behavior. Currently, we are on Phase 1. The analysis includes:
+This project analyzes two hotel booking datasets to understand cancellation patterns and customer behavior. Currently, we are on Phase 2. The analysis includes:
 
-- **Univariate Analysis**: Individual variable distributions and patterns
-- **Bivariate Analysis**: Relationships between variables
-- **Customer Behavior Clustering**: Identification of distinct customer types
-- **Geographic Analysis**: Country-specific booking patterns
-- **Seasonal Analysis**: Monthly and seasonal trends
-
-We also provide the cleaned + merged dataset.
+- **Spark Analysis**: 
+  - **Cancellation Rates**: Calculate cancellation rates for each month
+  - **Averages**: Compute average price and average number of nights for each month
+  - **Monthly Bookings**: Count monthly bookings by market segments
+  - **Seasonality**: Identify the most popular month of the year for bookings based on revenue
+- **Deign and Populate Database**:
+  - **Schema Design**: Create a schema that matches each of the three datasets (two cleaned and one unified)
+  - **Population**: Load the datasets into PostgreSQL using PySpark
 
 ## Installation & Setup
 
@@ -56,20 +57,7 @@ python -c "import pyspark; print('PySpark installed successfully')"
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### 2. Run Univariate Analysis
+### 2. Run Spark Analysis
 
 ```bash
-python scripts/eda/univariate.py > reports/phase1/univariate/logs/univariate_results.txt 2>&1
-```
-
-### 3. Run Bivariate Analysis
-
-```bash
-python scripts/eda/bivariate.py > reports/phase1/bivariate/logs/bivariate_results.txt 2>&1
-```
-
-### 4. View Results
-
-- **Analysis Results**: Check `reports/phase1/*/logs/*_results.txt`
-- **Visualizations**: Check `reports/phase1/*/figures/` directory
-- **System Logs**: Check `logs/` directory for Spark logs
+python scripts/phase2/spark_analysis.py   
