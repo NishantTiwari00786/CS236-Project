@@ -8,7 +8,6 @@ spark = SparkSession.builder \
     .appName("database-population") \
     .config("spark.jars", "JARS/postgresql-42.7.8.jar")\
     .getOrCreate()
-    
 # postgreSQL connection information 
 
 jdbc_url = "jdbc:postgresql://localhost:5432/bookings"
@@ -41,8 +40,6 @@ print("Data successfully written to PostgreSQL database.")
 print({"customer_reservations": customer_df.count(), "hotel_bookings": hotel_df.count(), "unified_bookings": unified_df.count()})
 
 spark.stop()
-
-
 
 
 
