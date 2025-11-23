@@ -107,34 +107,76 @@ DB_PORT=5432
 1. Activate Virtual Environment
 
 source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 2. Run Spark Analysis
+
+```bash
+python scripts/phase2/spark_analysis.py   
 
 
-2. Run Spark Analysis (Phase 1)
+Hotel Dataset Dashboard (Phase 3)
 
-To run the EDA scripts:
+A web-based dashboard for filtering and analyzing hotel booking data using Python (Flask) and PostgreSQL.
 
-python scripts/eda/eda.py
+Prerequisites
 
-3. Run Spark Analysis (Phase 2)
+Python 3.x installed.
 
-python scripts/phase2/spark_analysis.py  
+PostgreSQL installed and running.
+
+Installation Steps
+
+1. Database Setup
+
+If you haven't set up the database yet, run these commands in your terminal:
+
+# 1. Create the database
+psql postgres -c "CREATE DATABASE bookings;"
+
+# 2. Import the data (Run these in order)
+# Note: Adjust the path 'sql/' if your folders are structured differently
+psql -d bookings -f sql/customer_reservations.sql
+psql -d bookings -f sql/hotel_bookings.sql
+psql -d bookings -f sql/unified_bookings.sql
 
 
-4. Running the Web Dashboard (Phase 3)
+2. Install Dependencies
 
-Once the database is configured, you can launch the web interface.
+Navigate to the project folder (scripts/phase3) and install the required Python libraries:
 
-1. Start the Flask Server
+pip install -r requirements.txt
+# OR if that fails:
+python3 -m pip install -r requirements.txt
 
-cd scripts/phase3
-python app.py
+
+3. Environment Configuration
+
+Create a new file named .env in this folder.
+
+Copy the contents of .env.example into it.
+
+Update DB_USER and DB_PASS to match your local PostgreSQL credentials.
+
+To find your username: Run psql postgres -c "\du" in your terminal.
+
+Example .env for Mac users:
+
+DB_HOST=localhost
+DB_NAME=bookings
+DB_USER=your_mac_username
+DB_PASS=
+DB_PORT=5432
 
 
-2. Access the Dashboard
+Running the Application
 
-Open your web browser and navigate to:
-https://www.google.com/url?sa=E&source=gmail&q=http://127.0.0.1:5001
+Run the server using Python:
 
-The application runs on port 5001 to avoid conflicts with macOS system services 
+python3 app.py
 
- 
+
+Open your browser and navigate to:
+https://www.google.com/search?q=http://127.0.0.1:5001
+
+Note: We use port 5001 to avoid conflicts with AirPlay Receiver on macOS.
