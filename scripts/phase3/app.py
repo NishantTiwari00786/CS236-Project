@@ -3,10 +3,12 @@ import psycopg2
 import os
 from dotenv import load_dotenv # to load .env variables it looks for .env file in the current directory and loods the variables from there
 
-load_dotenv()
+load_dotenv() # it will take the values for the .env file  
 
 app = Flask(__name__)
 
+
+# function to get a connection to the PostgreSQL database, using the environment variables
 def get_db_connection():
     return psycopg2.connect(
         host=os.getenv('DB_HOST'),
@@ -17,7 +19,7 @@ def get_db_connection():
     )
 
 
-# when user viisits the home page, this function runs the index html to display the web page
+# when user visits the home page, this function runs the index html to display the web page
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -26,21 +28,21 @@ def index():
 # API route to get data from the database with optional filtering
 @app.route('/api/bookings', methods=['GET'])
 def get_data():
-    dataset = request.args.get('dataset')        # table to read
+    dataset = request.args.get('dataset')        # table to read(which are 3 sql files we have)
     filter_column = request.args.get('filter_column')  # column to filter
     filter_value = request.args.get('filter_value')    # value to filter
 
     conn = get_db_connection()
     cur = conn.cursor()
 
-    query = f"SELECT * FROM {dataset}"
-
+    query = f"SELECT * FROM {dataset}" # it selects everything from the selected table 
+# if user selects column and value, then it will call this query to display that
     if filter_column and filter_value:
         query += f" WHERE {filter_column} = %s"
         cur.execute(query, (filter_value,))
     else:
         cur.execute(query)
-
+# once it gets the data, it will convert it dict format to send it to the frontend
     rows = cur.fetchall()
     columns = [desc[0] for desc in cur.description]
 
@@ -53,6 +55,9 @@ def get_data():
 
 
 # to populate the filter values dropdown based on the selected column
+# then it returns the distinct values for that column
+# and return the list of values as json response
+# this is called when user changes the filter column
 @app.route('/api/distinct_values', methods=['GET'])
 def get_distinct_values():
     dataset = request.args.get('dataset')
@@ -76,4 +81,7 @@ def get_distinct_values():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port = 5001)
+    app.run(debug=True, port = 5001) # it shows the detailed page for debugging
+
+
+# reference: https://www.geeksforgeeks.org/python/flask-tutorial/ - followed this tutorial to create the flask app structure with api routes
