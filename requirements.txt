@@ -9,3 +9,6 @@ scikit-image==0.22.0
 plotly==5.19.0
 setuptools>=65.5.0
 pyarrow>=4.0.0
+flask
+psycopg2
+python-dotenv
