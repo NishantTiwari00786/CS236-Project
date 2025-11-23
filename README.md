@@ -64,7 +64,7 @@ pip install -r requirements.txt
 python -c "import pyspark; print('PySpark installed successfully')"
 
 
-🛠️ Database Configuration (Phase 3)
+Database Configuration (Phase 3)
 
 Before running the dashboard, you must set up the PostgreSQL database and environment variables.
 
