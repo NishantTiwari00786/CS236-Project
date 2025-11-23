@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Dataset Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <h1>Phase 3: Hotel Dataset Dashboard</h1>
+
+    <div class="controls">
+
+        <label>Select Dataset:</label>
+        <select id="dataset" onchange="updateFilterColumns()">
+            <option value="hotel_bookings">Hotel Bookings</option>
+            <option value="customer_reservations">Customer Reservations</option>
+            <option value="unified_bookings">Unified Dataset</option>
+        </select>
+
+        <label>Filter Column:</label>
+        <select id="filter_column" onchange="updateFilterValues()"></select>
+
+        <label>Filter Value:</label>
+        <select id="filter_value">
+            <option value="">All values</option>
+        </select>
+
+        <button id="fetchBtn" onclick="fetchData()">Fetch Data</button>
+    </div>
+
+    <div class="table-container">
+        <table id="resultsTable">
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
