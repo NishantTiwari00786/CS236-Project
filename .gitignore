@@ -3,3 +3,5 @@ echo "*.mov" >> .gitignore
 echo "data/unified/*.csv" >> .gitignore
 echo "data/unified/*.crc" >> .gitignorePhase 1 Demo Video.mov
 echo "data/unified/*.crc" >> .gitignore
+__pycache__/
+.env

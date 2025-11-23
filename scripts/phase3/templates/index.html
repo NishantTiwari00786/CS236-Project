@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Dataset Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <!-- main title for the phase 3 web-->
+    <h1>Phase 3: Hotel Dataset Dashboard</h1>
+    <!-- section for dropdown and button where user interacts -->
+    <div class="controls">
+        <!-- data set dropdown: lets user to pick up which table to query-->
+        <label>Select Dataset:</label>
+        <select id="dataset" onchange="updateFilterColumns()">
+            <option value="hotel_bookings">Hotel Bookings</option>
+            <option value="customer_reservations">Customer Reservations</option>
+            <option value="unified_bookings">Unified Dataset</option>
+        </select>
+        <!-- filter columns, populate it based on selected dataset-->
+        <label>Filter Column:</label>
+        <select id="filter_column" onchange="updateFilterValues()"></select>
+        <!-- filter columns, populate it based on selected dataset-->
+        <label>Filter Value:</label>
+        <select id="filter_value">
+            <option value="">All values</option> <!-- default, if no filter is applied-->
+        </select>
+        <!-- button to fetch the data based on selected options, to trigger the api calls-->
+        <button id="fetchBtn" onclick="fetchData()">Fetch Data</button>
+    </div>
+    <!-- table to display the results from the api call, added the wrapper for scrollability-->
+    <div class="table-container">
+        <table id="resultsTable">
+            <thead id="tableHead"></thead> <!-- table header for column names -->
+            <tbody id="tableBody"></tbody> <!-- table header for values of the body -->
+        </table>
+    </div>
+    <!-- linking the script.js file for the javascript code, this handles, api calls, dropdowns, and table rendering-->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
