@@ -1,182 +1,166 @@
 Hotel Booking Cancellation Analysis
 
-A comprehensive Exploratory Data Analysis (EDA) project analyzing hotel booking cancellation patterns using PySpark, PostgreSQL, and Flask.
+This project analyzes hotel booking cancellation patterns using PySpark, PostgreSQL, and a Flask web dashboard. The analysis is divided into three phases, covering data processing, database design, and web application development.
 
 Project Overview
 
-This project analyzes two hotel booking datasets to understand cancellation patterns and customer behavior. The project is divided into three phases:
+The project utilizes two specific hotel booking datasets and one unified dataset to study customer behavior.
 
-Phase 1: Spark Analysis:
+Phase 1: Spark Analysis
 
-Cancellation Rates: Calculate cancellation rates for each month
+We used PySpark to perform Exploratory Data Analysis (EDA), specifically:
 
-Averages: Compute average price and average number of nights for each month
+Computing monthly cancellation rates.
 
-Monthly Bookings: Count monthly bookings by market segments
+Calculating average prices and stay durations.
 
-Seasonality: Identify the most popular month of the year for bookings based on revenue
+Analyzing bookings by market segment.
 
-Phase 2: Design and Populate Database:
+Identifying seasonality trends based on revenue.
 
-Schema Design: Create a schema that matches each of the three datasets (two cleaned and one unified)
+Phase 2: Database Design and Population
 
-Population: Load the datasets into PostgreSQL using PySpark
+We designed a PostgreSQL schema and populated it with the cleaned data:
 
-Phase 3: WebUI Dashboard:
+Designed schemas for customer_reservations, hotel_bookings, and unified_bookings.
 
-Interactive Interface: A lightweight Flask-based web application to view data
+Loaded the data using SQL scripts (or PySpark).
 
-Dynamic Filtering: Filter datasets by any column attribute (e.g., Country, Booking Status)
+Phase 3: Web UI Dashboard
 
-API Integration: RESTful endpoints serving JSON data from PostgreSQL to the frontend
+We developed a Flask application connected to the PostgreSQL database to:
 
-Installation & Setup
+Visualize the data in a table format.
+
+Implement dynamic filtering for columns (e.g., Country, Booking Status).
+
+Serve data via REST API endpoints.
 
 Prerequisites
+
+Ensure the following are installed on your system:
 
 Python 3.8 or higher
 
 Java 8 or higher (required for Spark)
 
-PostgreSQL installed and running
+PostgreSQL (installed and running)
 
 Git
 
+Installation and Setup
+
 1. Clone the Repository
 
-git clone [https://github.com/NishantTiwari00786/CS236-Project](https://github.com/NishantTiwari00786/CS236-Project)
+git clone [https://github.com/NishantTiwari00786/CS236-Project.git](https://github.com/NishantTiwari00786/CS236-Project.git)
 cd CS236-Project
 
 
-2. Create Virtual Environment
+2. Set Up Virtual Environment
+
+It is recommended to use a virtual environment to manage dependencies.
 
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate          # On macOS/Linux
+# venv\Scripts\activate           # On Windows
 
 
 3. Install Dependencies
 
+Install the required libraries from the requirements.txt file.
+
 pip install -r requirements.txt
 
 
-4. Verify Installation
+To verify the installation, check if PySpark loads correctly:
 
 python -c "import pyspark; print('PySpark installed successfully')"
 
 
-Database Configuration (Phase 3)
+Database Setup
 
-Before running the dashboard, you must set up the PostgreSQL database and environment variables.
+The project requires a PostgreSQL database named bookings.
 
-1. Setup Database & Import Data
+1. Create the Database
 
-Run the following commands to create the database and populate it with the Phase 2 SQL files:
+Run the following command in your terminal:
 
-# Create the database
 psql postgres -c "CREATE DATABASE bookings;"
 
-# Import the datasets (Ensure you are in the project root)
+
+2. Import Data
+
+Run the SQL files located in the sql/ directory to create tables and load the data. Execute them in this order:
+
 psql -d bookings -f sql/customer_reservations.sql
 psql -d bookings -f sql/hotel_bookings.sql
 psql -d bookings -f sql/unified_bookings.sql
 
 
-2. Configure Environment Variables
+Phase 3 Configuration (Flask App)
 
-Navigate to the Phase 3 script directory:
+The web dashboard requires a .env file to connect to the database.
+
+Navigate to the Phase 3 directory:
 
 cd scripts/phase3
 
 
-Create a .env file based on the example:
+Create a file named .env in this directory.
 
-cp ../../.env.example .env  # Or create it manually
-
-
-Open .env and update DB_USER with your local PostgreSQL username:
+Add the following configuration to the .env file. Update DB_USER with your local PostgreSQL username.
 
 DB_HOST=localhost
 DB_NAME=bookings
-DB_USER=your_username_here
+DB_USER=your_postgres_username
 DB_PASS=
 DB_PORT=5432
 
 
-📈 Running the Analysis
-
-1. Activate Virtual Environment
-
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-### 2. Run Spark Analysis
-
-```bash
-python scripts/phase2/spark_analysis.py   
-
-
-Hotel Dataset Dashboard (Phase 3)
-
-A web-based dashboard for filtering and analyzing hotel booking data using Python (Flask) and PostgreSQL.
-
-Prerequisites
-
-Python 3.x installed.
-
-PostgreSQL installed and running.
-
-Installation Steps
-
-1. Database Setup
-
-If you haven't set up the database yet, run these commands in your terminal:
-
-# 1. Create the database
-psql postgres -c "CREATE DATABASE bookings;"
-
-# 2. Import the data (Run these in order)
-# Note: Adjust the path 'sql/' if your folders are structured differently
-psql -d bookings -f sql/customer_reservations.sql
-psql -d bookings -f sql/hotel_bookings.sql
-psql -d bookings -f sql/unified_bookings.sql
-
-
-2. Install Dependencies
-
-Navigate to the project folder (scripts/phase3) and install the required Python libraries:
-
-pip install -r requirements.txt
-# OR if that fails:
-python3 -m pip install -r requirements.txt
-
-
-3. Environment Configuration
-
-Create a new file named .env in this folder.
-
-Copy the contents of .env.example into it.
-
-Update DB_USER and DB_PASS to match your local PostgreSQL credentials.
-
-To find your username: Run psql postgres -c "\du" in your terminal.
-
-Example .env for Mac users:
-
-DB_HOST=localhost
-DB_NAME=bookings
-DB_USER=your_mac_username
-DB_PASS=
-DB_PORT=5432
-
+Note: To find your Postgres username, run psql postgres -c "\du" in the terminal.
 
 Running the Application
 
-Run the server using Python:
+Running Spark Analysis (Phase 1 & 2)
+
+To run the analysis scripts from the root directory:
+
+python scripts/phase2/spark_analysis.py
+
+
+Running the Web Dashboard (Phase 3)
+
+To start the web server:
+
+Navigate to the script directory:
+
+cd scripts/phase3
+
+
+Run the application:
 
 python3 app.py
 
 
-Open your browser and navigate to:
-https://www.google.com/search?q=http://127.0.0.1:5001
+Open your web browser and go to:
+http://127.0.0.1:5001
 
-Note: We use port 5001 to avoid conflicts with AirPlay Receiver on macOS.
+Note: The application runs on port 5001 to avoid conflicts with system services on macOS.
+
+Usage
+
+Select Dataset: Choose between Hotel Bookings, Customer Reservations, or the Unified Dataset.
+
+Filter Column: Select a column to filter by (e.g., country).
+
+Filter Value: Select a specific value from the dropdown.
+
+Fetch Data: Click the button to retrieve and display the rows.
+
+Troubleshooting
+
+Database Connection Error: Ensure PostgreSQL is running and the credentials in the .env file are correct.
+
+Port Error: If port 5001 is in use, edit app.py to change the port number.
+
+Missing Data: Verify that the SQL import commands in the "Database Setup" section ran successfully.
