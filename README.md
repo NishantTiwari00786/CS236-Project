@@ -51,8 +51,6 @@ Make sure the following are installed:
 
 ### 2. Set Up Virtual Environment
 
-It is recommended to use a virtual environment to manage dependencies.
-
     python -m venv venv
     source venv/bin/activate          # On macOS/Linux
     # venv\Scripts\activate           # On Windows
@@ -127,7 +125,6 @@ From the project root directory:
 
     python scripts/phase2/spark_analysis.py
 
-(Adjust the script path/name if your group uses a different file.)
 
 ### 2. Running the Web Dashboard (Phase 3)
 
