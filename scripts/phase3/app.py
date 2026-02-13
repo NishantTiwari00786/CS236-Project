@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 import psycopg2
 import os
-from dotenv import load_dotenv # to load .env variables it looks for .env file in the current directory and loods the variables from there
+from dotenv import load_dotenv # to load .env variables
 
-load_dotenv() # it will take the values for the .env file  
+#  Calculate the path to the project root to find .env 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(script_dir, "../../"))
+
+# Load the .env file from the project root instead of the current folder
+load_dotenv(os.path.join(project_root, ".env")) 
 
 app = Flask(__name__)
 
@@ -11,11 +16,11 @@ app = Flask(__name__)
 # function to get a connection to the PostgreSQL database, using the environment variables
 def get_db_connection():
     return psycopg2.connect(
-        host=os.getenv('DB_HOST'),
-        database=os.getenv('DB_NAME'),
+        host=os.getenv('DB_HOST', 'localhost'),
+        database=os.getenv('DB_NAME', 'bookings'),
         user=os.getenv('DB_USER'),
         password=os.getenv('DB_PASS'),
-        port=os.getenv('DB_PORT')
+        port=os.getenv('DB_PORT', '5432')
     )
 
 
@@ -30,19 +35,21 @@ def index():
 def get_data():
     dataset = request.args.get('dataset')        # table to read(which are 3 sql files we have)
     filter_column = request.args.get('filter_column')  # column to filter
-    filter_value = request.args.get('filter_value')    # value to filter
+    filter_value = request.aret('filter_value')    # value to filter
 
     conn = get_db_connection()
     cur = conn.cursor()
 
     query = f"SELECT * FROM {dataset}" # it selects everything from the selected table 
-# if user selects column and value, then it will call this query to display that
+    
+    # if user selects column and value, then it will call this query to display that
     if filter_column and filter_value:
         query += f" WHERE {filter_column} = %s"
         cur.execute(query, (filter_value,))
     else:
         cur.execute(query)
-# once it gets the data, it will convert it dict format to send it to the frontend
+
+    # once it gets the data, it will convert it dict format to send it to the frontend
     rows = cur.fetchall()
     columns = [desc[0] for desc in cur.description]
 
@@ -81,7 +88,7 @@ def get_distinct_values():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port = 5001) # it shows the detailed page for debugging
+    app.run(debug=True, port=5001) # it shows the detailed page for debugging
 
 
 # reference: https://www.geeksforgeeks.org/python/flask-tutorial/ - followed this tutorial to create the flask app structure with api routes
