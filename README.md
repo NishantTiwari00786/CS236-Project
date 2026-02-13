@@ -1,3 +1,7 @@
+Team Members: Nishant Tiwari, Simarpal Singh
+
+
+
 # Hotel Booking Cancellation Analysis
 
 This project analyzes hotel booking cancellation patterns using PySpark, PostgreSQL, and a Flask web dashboard. The analysis is divided into three phases, covering data processing, database design, and web application development.
